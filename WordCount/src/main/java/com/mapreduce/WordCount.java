@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -12,9 +13,11 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 
 
-public class WordCount {
+public class WordCount extends Configured implements Tool{
 
 	/**
 	 * Tokenize the value and output each word as a key and 1 as the value
@@ -63,25 +66,16 @@ public class WordCount {
 	}
 	
 
-	/**
-	 * A simple driver that creates, configures and runs a MapReduce job 
-	 * @param args
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 * @throws InterruptedException
-	 */
-	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+	@Override
+	public int run(String[] args) throws Exception {
 
-		// Ensure an input and output path were specified
-		if (args.length != 2) {
-			System.exit(-1);
-		}
+		// Configuration processed by ToolRunner
+		Configuration conf = getConf();
 		
-		// Configure the Job
-		Configuration conf = new Configuration();
-		Job job = Job.getInstance(conf, "Word Count");
+		// Create a Job using the processed conf
+		Job job = Job.getInstance(conf, "WordCount");
 		job.setJarByClass(WordCount.class);
-		
+				
 		// Set the Mapper, Combiner, and Reducer class
 		// It is important to note that when using the reducer as a
 		// combiner, the reducer's input key/value types much match		
@@ -98,9 +92,27 @@ public class WordCount {
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		
-		// Run the job
-		System.exit(job.waitForCompletion(true) ? 0 : 1);
+		// Submit the and return its status
+		return job.waitForCompletion(true) ?  0 : 1;
+	}
+	
+	
+	/**
+	 * A simple driver that creates, configures and runs a MapReduce job 
+	 * @param args
+	 * @throws Exception 
+	 */
+	public static void main(String[] args) throws Exception {
 
+		// Ensure an input and output path were specified
+		if (args.length != 2) {
+			System.exit(-1);
+		}
+		
+		// Set up and run the job
+		int result = ToolRunner.run(new Configuration(), new WordCount(), args);
+		
+		System.exit(result);
 	}
 
 }
