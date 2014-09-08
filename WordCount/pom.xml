@@ -6,8 +6,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
-		<hadoop.mr1.version>2.0.0-mr1-cdh4.2.0</hadoop.mr1.version>
-		<hadoop.version>2.0.0-cdh4.2.0</hadoop.version>
+		<hadoop.version>2.5.0</hadoop.version>
 	</properties>
 
 	<repositories>
@@ -15,24 +14,24 @@
 			<id>mrUnit</id>
 			<name>MR Unit</name>
 			<url>https://repository.apache.org/content/repositories/releases/org/apache/mrunit/mrunit/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
+		</repository>
+
+		<repository>
+			<id>mvn-public</id>
+			<name>MVNRepository</name>
+			<url>http://mvnrepository.com</url>
 		</repository>
 	</repositories>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-core</artifactId>
-			<version>${hadoop.mr1.version}</version>
+			<artifactId>hadoop-common</artifactId>
+			<version>${hadoop.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-common</artifactId>
+			<artifactId>hadoop-mapreduce-client-core</artifactId>
 			<version>${hadoop.version}</version>
 		</dependency>
 		<dependency>
@@ -74,7 +73,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
