@@ -106,7 +106,9 @@ public class WordCount extends Configured implements Tool{
 
 		// Ensure an input and output path were specified
 		if (args.length != 2) {
-			System.exit(-1);
+			System.err.println("<inputDirectory> <ouputDirectory>");
+			
+			System.exit(1);
 		}
 		
 		// Set up and run the job
