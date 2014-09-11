@@ -1,0 +1,27 @@
+package com.mapreduce;
+
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mrunit.mapreduce.MapDriver;
+import org.apache.hadoop.mrunit.mapreduce.MapReduceDriver;
+import org.apache.hadoop.mrunit.mapreduce.ReduceDriver;
+import org.junit.Before;
+
+
+public class DistributedCacheTest {
+	MapDriver<LongWritable, Text, Text, LongWritable> mapDriver;
+	ReduceDriver<Text, LongWritable, Text, LongWritable> reduceDriver;
+	MapReduceDriver<LongWritable, Text, Text, LongWritable, Text, LongWritable> mapReduceDriver;
+
+//	@Before
+//	public void setUp() {
+//		DistributedCacheMapper mapper = new DistributedCacheMapper();
+//		
+//		mapDriver = MapDriver.newMapDriver(mapper);
+//		reduceDriver = ReduceDriver.newReduceDriver(reducer);
+//		mapReduceDriver = MapReduceDriver.newMapReduceDriver(mapper, reducer);
+//	}
+//	
+	
+	
+}
