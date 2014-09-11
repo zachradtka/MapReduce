@@ -52,14 +52,20 @@ public class WordCount extends Configured implements Tool{
 	 */
 	public static class WordCountReducer extends Reducer<Text, LongWritable, Text, LongWritable>{
 		
+		// The total count for a unique word
 		private LongWritable sum = new LongWritable();
 		
 		public void reduce(Text keyIn, Iterable<LongWritable> values, Context context) throws IOException, InterruptedException{
+			
+			// Initialize the current word's sum
 			long partialSum = 0;
 			
+			// Calculate the number of occurrences for the current word
 			for (LongWritable value : values) {
 				partialSum += value.get();
 			}
+			
+			// Set the sum for the current word and output it's total
 			sum.set(partialSum);
 			context.write(keyIn, sum);
 		}
@@ -92,7 +98,7 @@ public class WordCount extends Configured implements Tool{
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		
-		// Submit the and return its status
+		// Submit the job and return it's status
 		return job.waitForCompletion(true) ?  0 : 1;
 	}
 	
