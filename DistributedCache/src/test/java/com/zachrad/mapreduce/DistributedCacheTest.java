@@ -11,18 +11,18 @@ import com.zachrad.mapreduce.DistributedCache.DistributedCacheMapper;
 import com.zachrad.mapreduce.DistributedCache.DistributedCacheReducer;
 
 public class DistributedCacheTest {
-    MapDriver<LongWritable, Text, Text, LongWritable> mapDriver;
-    ReduceDriver<Text, LongWritable, Text, LongWritable> reduceDriver;
-    MapReduceDriver<LongWritable, Text, Text, LongWritable, Text, LongWritable> mapReduceDriver;
+	MapDriver<LongWritable, Text, Text, LongWritable> mapDriver;
+	ReduceDriver<Text, LongWritable, Text, LongWritable> reduceDriver;
+	MapReduceDriver<LongWritable, Text, Text, LongWritable, Text, LongWritable> mapReduceDriver;
 
-    @Before
-    public void setUp() {
-	DistributedCacheMapper mapper = new DistributedCacheMapper();
-	DistributedCacheReducer reducer = new DistributedCacheReducer();
+	@Before
+	public void setUp() {
+		DistributedCacheMapper mapper = new DistributedCacheMapper();
+		DistributedCacheReducer reducer = new DistributedCacheReducer();
 
-	mapDriver = MapDriver.newMapDriver(mapper);
-	reduceDriver = ReduceDriver.newReduceDriver(reducer);
-	mapReduceDriver = MapReduceDriver.newMapReduceDriver(mapper, reducer);
-    }
+		mapDriver = MapDriver.newMapDriver(mapper);
+		reduceDriver = ReduceDriver.newReduceDriver(reducer);
+		mapReduceDriver = MapReduceDriver.newMapReduceDriver(mapper, reducer);
+	}
 
 }
