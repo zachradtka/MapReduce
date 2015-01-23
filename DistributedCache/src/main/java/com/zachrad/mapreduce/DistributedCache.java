@@ -1,4 +1,4 @@
-package com.mapreduce;
+package com.zachrad.mapreduce;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

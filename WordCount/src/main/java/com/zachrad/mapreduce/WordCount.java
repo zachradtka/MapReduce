@@ -1,4 +1,4 @@
-package com.mapreduce;
+package com.zachrad.mapreduce;
 
 import java.io.IOException;
 import java.util.StringTokenizer;
