@@ -26,7 +26,7 @@ public class DistributedCache extends Configured implements Tool {
 	 * Create a stop list from the files located in the distributed cache. Tokenize the value and
 	 * output each word as a key and 1 as the value.
 	 * 
-	 * @author zradtka
+	 * @author Zachary Radtka
 	 *
 	 */
 	public static class DistributedCacheMapper extends
@@ -80,7 +80,7 @@ public class DistributedCache extends Configured implements Tool {
 	/**
 	 * Sum up the values for each unique key
 	 * 
-	 * @author zradtka
+	 * @author Zachary Radtka
 	 *
 	 */
 	public static class DistributedCacheReducer extends
