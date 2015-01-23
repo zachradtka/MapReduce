@@ -22,7 +22,7 @@ public class WordCount extends Configured implements Tool {
 	/**
 	 * Tokenize the value and output each word as a key and 1 as the value
 	 * 
-	 * @author zradtka
+	 * @author Zachary Radtka
 	 *
 	 */
 	public static class WordCountMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
@@ -50,7 +50,7 @@ public class WordCount extends Configured implements Tool {
 	/**
 	 * Sum up the values for each unique key
 	 * 
-	 * @author zradtka
+	 * @author Zachary Radtka
 	 *
 	 */
 	public static class WordCountReducer extends Reducer<Text, LongWritable, Text, LongWritable> {
