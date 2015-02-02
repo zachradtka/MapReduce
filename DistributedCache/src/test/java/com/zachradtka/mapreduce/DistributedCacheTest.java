@@ -1,4 +1,4 @@
-package com.zachrad.mapreduce;
+package com.zachradtka.mapreduce;
 
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -7,8 +7,8 @@ import org.apache.hadoop.mrunit.mapreduce.MapReduceDriver;
 import org.apache.hadoop.mrunit.mapreduce.ReduceDriver;
 import org.junit.Before;
 
-import com.zachrad.mapreduce.DistributedCache.DistributedCacheMapper;
-import com.zachrad.mapreduce.DistributedCache.DistributedCacheReducer;
+import com.zachradtka.mapreduce.DistributedCache.DistributedCacheMapper;
+import com.zachradtka.mapreduce.DistributedCache.DistributedCacheReducer;
 
 public class DistributedCacheTest {
 	MapDriver<LongWritable, Text, Text, LongWritable> mapDriver;

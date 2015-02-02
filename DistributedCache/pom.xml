@@ -71,7 +71,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>com.zachrad.mapreduce.DistributedCache</mainClass>
+							<mainClass>com.zachradtka.mapreduce.DistributedCache</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
