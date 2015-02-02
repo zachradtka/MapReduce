@@ -1,4 +1,4 @@
-package com.zachrad.mapreduce;
+package com.zachradtka.mapreduce;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,8 +11,8 @@ import org.apache.hadoop.mrunit.mapreduce.ReduceDriver;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.zachrad.mapreduce.WordCount.WordCountMapper;
-import com.zachrad.mapreduce.WordCount.WordCountReducer;
+import com.zachradtka.mapreduce.WordCount.WordCountMapper;
+import com.zachradtka.mapreduce.WordCount.WordCountReducer;
 
 public class WordCountTest {
 	MapDriver<LongWritable, Text, Text, LongWritable> mapDriver;

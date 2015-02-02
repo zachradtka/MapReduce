@@ -70,7 +70,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>com.zachrad.mapreduce.WordCount</mainClass>
+							<mainClass>com.zachradtka.mapreduce.WordCount</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
