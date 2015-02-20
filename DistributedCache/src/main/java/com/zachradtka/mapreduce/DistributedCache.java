@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
@@ -23,6 +24,18 @@ import org.apache.hadoop.util.ToolRunner;
 public class DistributedCache extends Configured implements Tool {
 
 	/**
+	 * Option string to identify file used to ignore patterns
+	 */
+	protected static final String ignorePatternsOptionString = "distributedcache.ignore.patterns";
+
+	/**
+	 * Option string to identify if case sensitive compare should be used
+	 */
+	protected static final String caseSensitiveOptionString = "distributedcache.case.sensitive";
+
+	protected static final String patternFileFlag = "-patternFile";
+
+	/**
 	 * Create a stop list from the files located in the distributed cache. Tokenize the value and
 	 * output each word as a key and 1 as the value.
 	 * 
@@ -39,21 +52,36 @@ public class DistributedCache extends Configured implements Tool {
 		private Text word = new Text();
 
 		// A set of words to ignore
-		private HashSet<String> stopSet = new HashSet<String>();
+		private Set<String> ignorePatterns = new HashSet<String>();
+
+		// Perform a case sensitive search
+		private Boolean caseSensitive = false;
 
 		public void setup(Context context) throws IOException {
 
-			// Get the list of cache files from the context
-			URI[] files = context.getCacheFiles();
+			Configuration conf = context.getConfiguration();
 
-			// Loop through the list of cache files adding all of the words
-			// to the stop list
-			for (URI file : files) {
-				try (BufferedReader br = new BufferedReader(new FileReader(file.toString()))) {
-					String line;
+			// Determine if the word count should be case sensitive
+			caseSensitive = conf.getBoolean(caseSensitiveOptionString, false);
 
-					while ((line = br.readLine()) != null) {
-						stopSet.add(line.toLowerCase());
+			if (conf.getBoolean(ignorePatternsOptionString, false)) {
+
+				// Get the list of cache files from the context
+				URI[] files = context.getCacheFiles();
+
+				// Loop through the list of cache files adding all of the words
+				// to the stop list
+				for (URI file : files) {
+					Path filePath = new Path(file.getPath());
+					String fileName = filePath.getName().toString();
+
+					try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+						String line;
+
+						while ((line = br.readLine()) != null) {
+							String pattern = (caseSensitive) ? line : line.toLowerCase();
+							ignorePatterns.add(pattern);
+						}
 					}
 				}
 			}
@@ -61,18 +89,22 @@ public class DistributedCache extends Configured implements Tool {
 
 		public void map(LongWritable keyIn, Text valueIn, Context context) throws IOException,
 				InterruptedException {
+
+			// Convert the entire line to lower case if the caseSensitive flag was set.
+			String line = (caseSensitive) ? valueIn.toString() : valueIn.toString().toLowerCase();
+
+			// Replace all of the patterns in the ignoreSet with ""
+			for (String pattern : ignorePatterns) {
+				line = line.replaceAll(pattern, "");
+			}
+
 			// Split the current line into words
-			StringTokenizer tokenizer = new StringTokenizer(valueIn.toString());
+			StringTokenizer tokenizer = new StringTokenizer(line);
 
 			// Create an output key/value pair for each word: <word,1>
 			while (tokenizer.hasMoreTokens()) {
-				String currWord = tokenizer.nextToken().toLowerCase();
-
-				// Filter out any words that are in the stop set
-				if (!stopSet.contains(currWord)) {
-					word.set(currWord);
-					context.write(word, one);
-				}
+				word.set(tokenizer.nextToken());
+				context.write(word, one);
 			}
 		}
 	}
@@ -132,8 +164,15 @@ public class DistributedCache extends Configured implements Tool {
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
-		// Set the distributed cache file
-		job.addCacheFile(new URI(args[2]));
+
+		for (int i = 0; i < args.length; i++) {
+			if (args[i].equals(patternFileFlag)) {
+
+				// Set the distributed cache file
+				job.addCacheFile(new Path(args[++i]).toUri());
+				job.getConfiguration().setBoolean(ignorePatternsOptionString, true);
+			}
+		}
 
 		// Submit the job and return it's status
 		return job.waitForCompletion(true) ? 0 : 1;
@@ -147,9 +186,9 @@ public class DistributedCache extends Configured implements Tool {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		if (args.length != 3) {
-			System.err.println("<inputDirectory> <ouputDirectory> <cacheFile>");
-
+		if (args.length < 2) {
+			System.err.println("<inputDirectory> <ouputDirectory> [" + patternFileFlag
+					+ " filename]");
 			System.exit(1);
 		}
 
