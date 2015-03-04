@@ -30,14 +30,13 @@ This will build the project and place the jar in the `target` directory.
 
 #### Running
 
-The WordCount application takes two arguments, _inputDirectory_ and _outputDirectory_. Running the following command from the command line will reaveal these arguments:
+The Word Count application takes two arguments, _inputDirectory_ and _outputDirectory_. Running the following command from the command line will reaveal these arguments:
 
-    $ hadoop jar WordCount-0.0.1-SNAPSHOT.jar
-    <inputDirectory> <ouputDirectory>
+    $ hadoop jar target/MapReduce-1.0-SNAPSHOT.jar com.zachradtka.mapreduce.WordCount <inputDirectory> <ouputDirectory>
 
 The following example command will run WordCount and place the ouput in a file called `part-r-00000` in the directory `output42` in HDFS.
 
-    $ hadoop jar WordCount-0.0.1-SNAPSHOT.jar input/books output42
+    $ hadoop jar target/MapReduce-1.0-SNAPSHOT.jar com.zachradtka.mapreduce.WordCount input/books output42
 
 To view the output the _hadoop cat_ command can be used.
 
@@ -48,4 +47,39 @@ Be careful. Depending on the size of text input, this will easily run off the sc
 One final note, displaying the output using _cat_ orders the output by alphabetical order on the keys or words, not by the values or word count. This occurs because of how shuffle/sort works in MapReduce. To display the words in order of frequency, the following command can be used.
 
     $ hadoop fs -cat output42/part* | sort -k2 -n -r | less
+
+### Distributed Cache
+
+This MapReduce job is an adaptation on _WordCount_. It enhances _WordCount_ by enabling files to be sent to the Mappers. You might ask, "Why are we sending files to the mappers?", and that is a valid question. 
+
+Let's assume that we want to find the frequency of all of the words in all of the books stored on Amazon. That is not to difficult using MapReduce and our WordCount program, but our intuition tells us that there are some words that are not worth counting. Mainly, "the", "is", etc.. 
+
+Using good programming practice, we know that hardcoding in these values is a bad idea, so the next best solution is to store all of the words we don't want to count in a file and pass that file to our Mappers. Our mappers can read this file and ignore any word in it. Furthermore, this makes our program flexible.
+
+#### Building
+
+To build this program use the following Maven command from within the WordCount directory:
+
+    mvn clean install
+
+This will build the project and place the jar in the `target` directory.
+
+#### Running
+
+The Distributed Cache application takes two positional arguments, _inputDirectory_ and _outputDirectory_ and one optional argument _-patternFile <fileName>_. Running the following command from the command line will reaveal these arguments:
+
+    $ $ hadoop jar target/MapReduce-1.0-SNAPSHOT.jar com.zachradtka.mapreduce.DistributedCache
+    <inputDirectory> <ouputDirectory> [-patternFile filename]
+
+The following example command will run Distributed Cache and place the ouput in a file called `part-r-00000` in the directory `outputBook` in HDFS.
+
+    $ hadoop jar target/MapReduce-1.0-SNAPSHOT.jar com.zachradtka.mapreduce.DistributedCache input/books/MobyDick.txt outputBook -patternFile input/cache/ignorePatterns.txt
+
+To view the output the _hadoop cat_ command can be used.
+
+    $ hadoop fs -cat outputBook/part*
+
+Use to following command to view the output, showing the most popular words first. From this you will see that "the" and other popular words have not been counted.
+
+    $ hadoop fs -cat outputBook/part* | sort -k2 -n -r | less
 
